@@ -1,0 +1,7 @@
+{"type":"thread.started","thread_id":"01a1357c-61b3-7800-9637-ea3995023623"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I’ll find and call `editor_get_context` once."}}
+{"type":"item.started","item":{"id":"item_1","type":"mcp_tool_call","server":"motion-editor","tool":"editor_get_context","arguments":{},"result":null,"error":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_1","type":"mcp_tool_call","server":"motion-editor","tool":"editor_get_context","arguments":{},"result":{"content":[{"type":"text","text":"No editor is connected. Call editor_open first; if it reports no tab connected, ask the user to open the editor URL in their browser."}],"structured_content":null},"error":null,"status":"failed"}}
+{"type":"item.completed","item":{"id":"item_2","type":"agent_message","text":"It returned an error saying no editor is connected and to call `editor_open` first."}}
+{"type":"turn.completed","usage":{"input_tokens":56425,"cached_input_tokens":47744,"cache_write_input_tokens":0,"output_tokens":143,"reasoning_output_tokens":0}}

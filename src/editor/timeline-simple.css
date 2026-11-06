@@ -1,0 +1,410 @@
+/* Scene strip (SimpleTimeline.tsx): one panel card per scene, as wide as the
+   scene is long, on the canvas under the transport row, edged by a rule. A
+   thin rail above the cards scrubs and carries the markers; the accent
+   playhead runs through both. Tokens only (styles.css :root). */
+
+.st-root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  user-select: none;
+}
+
+/* The strip's own play row, only when it stands alone (transport prop). */
+.st-transport {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 var(--space-1);
+}
+
+.st-time {
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.st-time-total {
+  color: var(--text-faint);
+  font-weight: 400;
+}
+
+.st-status {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Rail + cards + playhead share one horizontal scale (percentages of this box). */
+.st-lanes {
+  position: relative;
+  min-width: 0;
+  cursor: ew-resize;
+}
+
+.st-lanes.dragging,
+.st-lanes.dragging * {
+  cursor: grabbing;
+}
+
+/* The scrub rail: a hairline track the playhead's head rides on. */
+.st-rail {
+  position: relative;
+  height: 14px;
+}
+
+.st-rail::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 6px;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--rule);
+}
+
+.st-lanes:hover .st-rail::before {
+  background: var(--rule-strong);
+}
+
+.st-marker {
+  position: absolute;
+  top: 1px;
+  z-index: var(--layer-raised);
+  width: 9px;
+  height: 11px;
+  padding: 0;
+  border: 0;
+  background: var(--marker-color, var(--marker));
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.st-marker:hover {
+  filter: brightness(1.15);
+}
+
+/* ---- the cards */
+
+.st-scenes {
+  position: relative;
+  height: var(--scenes-h);
+}
+
+.st-scene {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  min-width: 0;
+  padding: 0 var(--space-1);
+  container-type: inline-size;
+  cursor: grab;
+}
+
+.st-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  min-width: 0;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.st-scene:hover .st-card {
+  border-color: var(--rule-strong);
+}
+
+/* The scene you are in: a firm ink edge. */
+.st-scene.current .st-card {
+  border-color: var(--text-dim);
+  box-shadow: inset 0 0 0 0.5px var(--text-dim);
+}
+
+/* The scene under review: a 1.5 px accent outline (the pointing colour; the
+   featured border belongs to the proposal's own card and banner). */
+.st-scene.proposed .st-card {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 0.5px var(--accent);
+}
+
+.st-scene.moving .st-card {
+  opacity: 0.45;
+}
+
+.st-thumb {
+  flex: none;
+  height: 26px;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--plate);
+  box-shadow: 0 0 0 1px var(--rule);
+  pointer-events: none;
+}
+
+.st-scene-name {
+  flex: 0 1 auto;
+  min-width: min(40px, 100%);
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.st-scene.blank .st-scene-name {
+  color: var(--text-dim);
+}
+
+.st-scene-len {
+  flex: none;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.st-scene-len.warn {
+  color: var(--warn);
+}
+
+/* The state, at the right, quiet: approved (the `built` key: a check), next / empty (faint),
+   locked (the `approved` key: a padlock, a step stronger); only proposed takes the accent. */
+.st-state {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
+  padding: 0 calc(var(--space-1) / 2);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.st-state.approved {
+  color: var(--text-dim);
+}
+
+.st-state.proposed {
+  color: var(--accent-strong);
+}
+
+button.st-state {
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+button.st-state:hover {
+  background: var(--accent-weak);
+}
+
+.st-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Approve (lock): quiet until the card is hovered; green and closed once approved. */
+.st-approve {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-faint);
+  opacity: 0.6;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    opacity var(--dur-fast) var(--ease);
+}
+
+.st-scene:hover .st-approve,
+.st-approve:focus-visible {
+  opacity: 1;
+}
+
+.st-approve:hover {
+  background: var(--panel-hover);
+  color: var(--text);
+}
+
+.st-approve.on {
+  background: var(--ok-weak);
+  color: var(--ok);
+  opacity: 1;
+}
+
+/* The right edge: drag to change the scene's length. */
+.st-scene-edge {
+  position: absolute;
+  top: 10px;
+  right: -1px;
+  bottom: 10px;
+  z-index: var(--layer-raised);
+  width: 9px;
+  cursor: ew-resize;
+}
+
+.st-scene-edge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 3px;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.st-scene:hover .st-scene-edge::after {
+  background: var(--rule-strong);
+}
+
+.st-scene-edge:hover::after,
+.st-scene-edge.active::after {
+  background: var(--accent);
+}
+
+.st-scene-edge.blocked::after {
+  background: var(--warn);
+}
+
+/* Narrow cards drop their detail from the right in, never the name. */
+/* "Proposed · in review" is the longest state: it gives way first (the accent outline still says it). */
+@container (max-width: 320px) {
+  .st-state.proposed .st-state-text {
+    display: none;
+  }
+}
+
+@container (max-width: 280px) {
+  .st-state .st-state-text {
+    display: none;
+  }
+
+  button.st-state {
+    padding: 0 var(--space-1);
+  }
+}
+
+@container (max-width: 170px) {
+  .st-thumb,
+  .st-scene-len {
+    display: none;
+  }
+}
+
+@container (max-width: 110px) {
+  .st-state {
+    display: none;
+  }
+
+  .st-card {
+    gap: 4px;
+    padding: 0 var(--space-1) 0 var(--space-2);
+  }
+}
+
+@container (max-width: 72px) {
+  .st-approve {
+    display: none;
+  }
+}
+
+/* Where a dragged scene would land. */
+.st-drop {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  z-index: calc(var(--layer-raised) + 1);
+  width: 2px;
+  border-radius: var(--radius-xs);
+  background: var(--accent);
+  transform: translateX(-1px);
+  pointer-events: none;
+}
+
+/* The playhead: an accent line through the cards with its head on the rail,
+   as in the timeline (the accent does the pointing). */
+.st-playhead {
+  position: absolute;
+  top: 2px;
+  bottom: 0;
+  z-index: calc(var(--layer-raised) + 1);
+  width: 0;
+  pointer-events: none;
+}
+
+.st-playhead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+}
+
+.st-playhead::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 0;
+  left: -0.75px;
+  width: 1.5px;
+  background: var(--accent);
+}
+
+/* A live readout while a scene is dragged. */
+.st-live {
+  position: absolute;
+  right: 3px;
+  bottom: calc(100% + 6px);
+  z-index: var(--layer-popover);
+  max-width: 70%;
+  padding: var(--space-1) var(--space-2);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop);
+  color: var(--text);
+  font-size: var(--text-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.st-live.warn {
+  color: var(--warn);
+}

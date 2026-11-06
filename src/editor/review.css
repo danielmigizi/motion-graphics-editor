@@ -1,0 +1,714 @@
+/* Proposal review (ProposalReview.tsx). While it is open it owns the stage:
+   the stage column switches to its review grid (styles.css .is-reviewing) and
+   the review's three parts take its areas: the header row (review), the
+   Current and Proposed plates with the change list (view), and its transport
+   row (transport), above the scene strip. The header row is the pending
+   proposal's banner, so it carries the featured border; the plates sit on the
+   always-dark stage. Tokens only (styles.css :root). */
+
+.pr {
+  display: contents;
+}
+
+/* ---------- The header row: Proposal · title · from whom, where · the decision ---------- */
+
+.pr-head {
+  grid-area: review;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--space-2) var(--pad) var(--space-2) var(--pad-l);
+  border: 1px solid var(--featured);
+  background: var(--panel);
+  container-type: inline-size;
+  animation: fade-in var(--dur) var(--ease);
+}
+
+.pr-eyebrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.pr-eyebrow.stale {
+  background: var(--warn-weak);
+  color: var(--warn);
+}
+
+.pr-title {
+  flex: 0 1 auto;
+  min-width: 60px;
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--text-lg);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pr-credit {
+  display: inline-flex;
+  flex: 0 3 auto; /* gives way before the title does */
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pr-credit-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pr-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--agent);
+}
+
+.pr-dot.you {
+  background: var(--text-faint);
+}
+
+.pr-head-spacer {
+  flex: 1 1 0;
+}
+
+.pr-head .btn {
+  flex: none;
+}
+
+.btn.ghost.pr-ask {
+  padding: 0 var(--space-2);
+  color: var(--accent-strong);
+}
+
+.btn.ghost.pr-ask:hover:not(:disabled) {
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+}
+
+.pr-apply {
+  padding: 0 var(--space-4) 0 var(--space-3);
+}
+
+.icon-btn.pr-close {
+  flex: none;
+  margin-left: 2px;
+}
+
+/* A narrow header keeps the title and the decision; whose and where, then the ask, go first. */
+@container (max-width: 640px) {
+  .pr-credit,
+  .pr-ask {
+    display: none;
+  }
+}
+
+/* ---------- The plates and the change list ---------- */
+
+.pr-body {
+  grid-area: view;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-4) var(--pad-l) var(--space-3);
+}
+
+/* The plates' well: the stage's dark plate, in both themes. */
+.pr-stage {
+  flex: 1 1 0;
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--stage);
+}
+
+.pr-frames {
+  position: relative;
+}
+
+.view-split .pr-frames {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px; /* GAP in ProposalReview.tsx */
+}
+
+/* Each version: a label above its plate. Flipping keeps both players mounted
+   and in step; only the one on show is visible. */
+.pr-slot {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.pr-body:not(.view-split) .pr-slot {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.pr-body:not(.view-split) .pr-slot.shown {
+  visibility: visible;
+}
+
+.pr-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px; /* LABEL in ProposalReview.tsx */
+  padding-bottom: var(--space-2);
+  color: var(--stage-ink-dim);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-slot.proposed .pr-tag {
+  color: var(--stage-accent);
+}
+
+.pr-tag-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--stage-accent);
+}
+
+.pr-tag-hear {
+  display: inline-flex;
+  color: currentColor;
+}
+
+/* Each picture has its edge on the plate, like the preview; the proposed one is outlined in rose. */
+.pr-plate {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background: var(--plate);
+  box-shadow: var(--frame-edge);
+}
+
+.pr-slot.proposed .pr-plate {
+  box-shadow: 0 0 0 1.5px var(--stage-accent);
+}
+
+.pr-ended {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-3);
+  background: var(--stage-veil);
+  color: var(--stage-ink-dim);
+  font-size: var(--text-md);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* The change list: under the plates, one line per change. */
+.pr-changes {
+  flex: 0 1 auto;
+  max-height: 42%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+}
+
+.pr-changes-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.pr-headline {
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pr-details-btn {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-strong);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+.pr-details-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pr-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0 2px;
+  padding: 0;
+  list-style: none;
+}
+
+.pr-target {
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--panel-raised);
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+
+.pr-target:hover {
+  border-color: var(--accent-line);
+  color: var(--accent-strong);
+}
+
+.pr-change-list {
+  display: grid;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pr-change {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: var(--space-1) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.pr-change:first-child {
+  border-top: 0;
+}
+
+/* + added (green), ~ changed or moved (ochre), − removed (red) */
+.pr-mark {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--warn-weak);
+  color: var(--warn);
+  font-size: var(--text-md);
+  font-weight: 700;
+  line-height: 1;
+  transform: translateY(3px);
+}
+
+.pr-change.added .pr-mark {
+  background: var(--ok-weak);
+  color: var(--ok);
+}
+
+.pr-change.removed .pr-mark {
+  background: var(--danger-weak);
+  color: var(--danger);
+}
+
+.pr-change-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pr-change-label {
+  overflow: hidden;
+  color: var(--text);
+  font-size: var(--text-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pr-change-values {
+  overflow: hidden;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.pr-none,
+.pr-note {
+  margin: 8px 0 0;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+.pr-audio {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 8px 0 0;
+  padding: var(--space-2) 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+
+.pr-audio-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: var(--space-1) 0;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  text-align: left;
+  cursor: pointer;
+}
+
+.pr-audio-line svg {
+  flex: none;
+  color: var(--accent);
+}
+
+.pr-audio-line:hover {
+  color: var(--accent-strong);
+}
+
+/* ---------- The transport row under the plates (a .transport card, styles.css) ---------- */
+
+.transport.pr-bar {
+  flex-wrap: nowrap;
+}
+
+.pr-bar .pr-scrub {
+  flex: 1 1 0;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.pr-scrub:focus-visible {
+  outline-offset: 0;
+}
+
+.pr-track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--rule);
+}
+
+.pr-scene-tick {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--rule-hover);
+  pointer-events: none;
+}
+
+/* Where the change is. */
+.pr-range {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  min-width: 3px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-weak);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+  pointer-events: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.pr-range.looping {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.pr-head-mark {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: 18px;
+  margin-left: -1px;
+  border-radius: var(--radius-xs);
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--panel);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Which version you see: a segmented control like Layout / Animate. */
+.pr-seg {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1);
+  border-radius: var(--radius);
+  background: var(--panel-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.pr-view {
+  height: 24px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.pr-view:hover {
+  color: var(--text);
+}
+
+.pr-view.on {
+  background: var(--panel);
+  box-shadow: 0 0 0 1px var(--rule-strong);
+  color: var(--text);
+}
+
+.pr-view[data-testid='proposal-view-proposed'].on {
+  color: var(--accent-strong);
+}
+
+.pr-hear-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-1) 0 var(--space-2);
+  color: var(--text-faint);
+}
+
+.btn.small.pr-play-range {
+  flex: none;
+  gap: 6px;
+  border-color: var(--accent-line);
+  background: var(--accent-weak);
+  box-shadow: none;
+  color: var(--accent-strong);
+}
+
+.btn.small.pr-play-range:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.btn.small.pr-play-range.on {
+  border-color: transparent;
+  background: var(--accent-fill);
+  box-shadow: var(--accent-glow);
+  color: var(--on-accent);
+}
+
+.pr-range-len {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A narrow review row keeps play, the scrubber and the view; the words go first. */
+@container (max-width: 860px) {
+  .pr-play-range-label {
+    display: none;
+  }
+}
+
+@container (max-width: 700px) {
+  .pr-bar .pr-view {
+    padding: 0 var(--space-2);
+  }
+
+  .pr-bar .tc-total {
+    display: none;
+  }
+}
+
+/* ---------- Out of date ---------- */
+
+.pr-stale-well {
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+}
+
+.pr-stale {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 460px;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  animation: rise-in var(--dur-slow) var(--ease);
+}
+
+.pr-stale-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--warn-weak);
+  color: var(--warn);
+}
+
+.pr-stale h3 {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.pr-stale p {
+  margin: 0;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.pr-stale-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.pr-stale-actions .fine {
+  flex: 1 1 200px;
+  margin: 0;
+}
+
+/* Toasts sit over the stage's top-right corner; keep them clear of the
+   review's decision buttons and of the waiting-proposal chip. */
+body:has(.pr-head) .toasts {
+  top: 116px;
+}
+
+body:has(.pr-pill) .toasts {
+  top: 104px;
+}
+
+/* ---------- Closed but waiting: a chip on the preview reopens the review ---------- */
+
+/* Still a pending proposal: it keeps the featured border while it floats over
+   the stage (no pop shadow: its ring would double the border on the dark plate). */
+.pr-pill {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  z-index: calc(var(--layer-raised) + 2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  height: 34px;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border: 1px solid var(--featured);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  color: var(--text);
+  font-size: var(--text-md);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: translateX(-50%);
+  animation: fade-in var(--dur) var(--ease);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.pr-pill:hover {
+  background: var(--panel-hover);
+}
+
+/* Below the "keying animation" flag when that is showing. */
+.stage.is-animate .pr-pill {
+  top: 42px;
+}
+
+.pr-pill-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.pr-pill-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pr-pill-cta {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius);
+  background: var(--accent-fill);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.pr-pill.stale .pr-pill-dot {
+  background: var(--warn);
+}
+
+.pr-pill.stale .pr-pill-cta {
+  background: var(--panel-raised);
+  color: var(--text);
+}
+
+.pr.is-stale .pr-dot {
+  background: var(--warn);
+}
+
+/* Out of date: the banner and the chip trade the featured border for amber, as the chat card does. */
+.pr.is-stale .pr-head,
+.pr-pill.stale {
+  border-color: color-mix(in srgb, var(--warn) 45%, transparent);
+}

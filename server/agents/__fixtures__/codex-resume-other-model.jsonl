@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_id":"01a1357c-61b3-7800-9637-ea3995023623"}
+{"type":"item.completed","item":{"id":"item_0","type":"error","message":"This session was recorded with model `gpt-6.1-sol` but is resuming with `gpt-6-astra`. Consider switching back to `gpt-6.1-sol` as it may affect Codex performance."}}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"No editor is currently connected.\n\nI’m Codex, based on GPT-6."}}
+{"type":"turn.completed","usage":{"input_tokens":78628,"cached_input_tokens":47744,"cache_write_input_tokens":0,"output_tokens":210,"reasoning_output_tokens":44}}

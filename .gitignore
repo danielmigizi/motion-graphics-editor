@@ -1,0 +1,15 @@
+node_modules
+dist/
+renders/
+projects/
+public/assets/uploads/
+public/analysis/
+*.log
+.DS_Store
+.claude/worktrees/
+.claude/settings.local.json
+.mge/
+chats/
+brand-kits/
+.engine-bundle/
+.engine-cache/

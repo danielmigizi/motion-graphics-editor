@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 140" width="480" height="140" fill="none">
+  <title>Relay</title>
+  <defs>
+    <mask id="relay-mark-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="480" height="140">
+      <rect x="31" y="22" width="96" height="96" rx="26" fill="#fff"/>
+      <g stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M58 46 L76 70 L58 94" stroke="#6b6b6b"/>
+        <path d="M82 46 L100 70 L82 94" stroke="#000"/>
+      </g>
+    </mask>
+  </defs>
+  <rect x="31" y="22" width="96" height="96" rx="26" fill="#fff" mask="url(#relay-mark-cut)"/>
+  <g transform="translate(21 0)" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M142 100 V48"/>
+    <path d="M142 74 Q142 48 172 48"/>
+    <path d="M188 74 H240 A26 26 0 1 0 232.4 92.4"/>
+    <path d="M268 22 V100"/>
+    <circle cx="318" cy="74" r="26"/>
+    <path d="M344 48 V100"/>
+    <path d="M370 48 L396 100"/>
+    <path d="M422 48 L383 126"/>
+  </g>
+</svg>

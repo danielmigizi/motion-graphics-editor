@@ -1,0 +1,59 @@
+{
+  "name": "motion-graphics-editor",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n web,server -c blue,green \"npm:dev:web\" \"npm:dev:server\"",
+    "dev:web": "vite",
+    "dev:server": "tsx watch --clear-screen=false server/index.ts",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "render:project": "tsx scripts/render-project.ts",
+    "cards:render": "tsx scripts/render-cut-cards.ts",
+    "verify:export": "tsx scripts/verify-export.ts",
+    "verify:agent": "tsx scripts/verify-agent-bridge.ts",
+    "mcp": "tsx mcp/server.ts",
+    "fal:stub": "tsx scripts/fal-stub.ts",
+    "audit": "node scripts/audit-dependencies.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/geist-mono": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/instrument-sans": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/space-grotesk": "^5.3.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@vitejs/plugin-react": "^6.1.2",
+    "express": "^5.3.0",
+    "playwright-core": "^1.64.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "vite": "^8.3.5",
+    "zod": "^4.6.7",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "concurrently": "^10.0.6",
+    "stylelint": "^17.16.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

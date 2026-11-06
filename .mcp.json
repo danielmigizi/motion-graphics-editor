@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "motion-editor": {
+      "command": "npx",
+      "args": ["--no-install", "tsx", "mcp/server.ts"]
+    }
+  }
+}

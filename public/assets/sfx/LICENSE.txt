@@ -1,0 +1,5 @@
+Built-in sound effects (whoosh.wav, click.wav, pop.wav, rise.wav, hit.wav, tick.wav)
+
+CC0 1.0 Universal (public domain dedication): synthesised by scripts/make-sfx.ts from code; no recorded or third-party material.
+
+Regenerate with: npx tsx scripts/make-sfx.ts

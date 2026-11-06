@@ -1,0 +1,343 @@
+{
+  "format": "mge.cut-previews/1",
+  "width": 480,
+  "height": 270,
+  "cards": {
+    "hook.mask-rise-claim": {
+      "beat": "hook",
+      "seconds": 3.5,
+      "hash": "7d45ffccd69731e9",
+      "video": "cut-previews/hook.mask-rise-claim.mp4",
+      "poster": "cut-previews/hook.mask-rise-claim.jpg"
+    },
+    "hook.punchline-drop": {
+      "beat": "hook",
+      "seconds": 4,
+      "hash": "870e66d0945b74c3",
+      "video": "cut-previews/hook.punchline-drop.mp4",
+      "poster": "cut-previews/hook.punchline-drop.jpg"
+    },
+    "hook.grid-claim": {
+      "beat": "hook",
+      "seconds": 3.5,
+      "hash": "c83785d8a611c8ad",
+      "video": "cut-previews/hook.grid-claim.mp4",
+      "poster": "cut-previews/hook.grid-claim.jpg"
+    },
+    "hook.big-number": {
+      "beat": "hook",
+      "seconds": 3.5,
+      "hash": "823cc07bbc70371e",
+      "video": "cut-previews/hook.big-number.mp4",
+      "poster": "cut-previews/hook.big-number.jpg"
+    },
+    "hook.ring-stat": {
+      "beat": "hook",
+      "seconds": 4,
+      "hash": "4896014886cc4070",
+      "video": "cut-previews/hook.ring-stat.mp4",
+      "poster": "cut-previews/hook.ring-stat.jpg"
+    },
+    "hook.chore-strike": {
+      "beat": "hook",
+      "seconds": 5,
+      "hash": "0360f7db1431f45f",
+      "video": "cut-previews/hook.chore-strike.mp4",
+      "poster": "cut-previews/hook.chore-strike.jpg"
+    },
+    "hook.lines-scroll": {
+      "beat": "hook",
+      "seconds": 3.5,
+      "hash": "a2ece1164000000b",
+      "video": "cut-previews/hook.lines-scroll.mp4",
+      "poster": "cut-previews/hook.lines-scroll.jpg"
+    },
+    "hook.glow-whisper": {
+      "beat": "hook",
+      "seconds": 4,
+      "hash": "6bbfc315b652f47d",
+      "video": "cut-previews/hook.glow-whisper.mp4",
+      "poster": "cut-previews/hook.glow-whisper.jpg"
+    },
+    "hook.split-reveal": {
+      "beat": "hook",
+      "seconds": 4,
+      "hash": "c9665f31f64d846f",
+      "video": "cut-previews/hook.split-reveal.mp4",
+      "poster": "cut-previews/hook.split-reveal.jpg"
+    },
+    "hook.product-first": {
+      "beat": "hook",
+      "seconds": 4.5,
+      "hash": "59abeb5b319b4e89",
+      "video": "cut-previews/hook.product-first.mp4",
+      "poster": "cut-previews/hook.product-first.jpg"
+    },
+    "hook.confession-quote": {
+      "beat": "hook",
+      "seconds": 5,
+      "hash": "bfd8ce13914c756e",
+      "video": "cut-previews/hook.confession-quote.mp4",
+      "poster": "cut-previews/hook.confession-quote.jpg"
+    },
+    "hook.typed-question": {
+      "beat": "hook",
+      "seconds": 5,
+      "hash": "7c7786e5dc8e7374",
+      "video": "cut-previews/hook.typed-question.mp4",
+      "poster": "cut-previews/hook.typed-question.jpg"
+    },
+    "proof.cursor-click": {
+      "beat": "proof",
+      "seconds": 5,
+      "hash": "89bb9271a26d19e3",
+      "video": "cut-previews/proof.cursor-click.mp4",
+      "poster": "cut-previews/proof.cursor-click.jpg"
+    },
+    "proof.spotlight-click": {
+      "beat": "proof",
+      "seconds": 5,
+      "hash": "9123296c826f359e",
+      "video": "cut-previews/proof.spotlight-click.mp4",
+      "poster": "cut-previews/proof.spotlight-click.jpg"
+    },
+    "proof.screen-chips": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "06dd9b6aaacba5d7",
+      "video": "cut-previews/proof.screen-chips.mp4",
+      "poster": "cut-previews/proof.screen-chips.jpg"
+    },
+    "proof.titled-demo": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "5587fb2bf009de2a",
+      "video": "cut-previews/proof.titled-demo.mp4",
+      "poster": "cut-previews/proof.titled-demo.jpg"
+    },
+    "proof.feature-trio": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "30956c4c74922cd9",
+      "video": "cut-previews/proof.feature-trio.mp4",
+      "poster": "cut-previews/proof.feature-trio.jpg"
+    },
+    "proof.week-scrub": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "7d3c9c5a06e84c53",
+      "video": "cut-previews/proof.week-scrub.mp4",
+      "poster": "cut-previews/proof.week-scrub.jpg"
+    },
+    "proof.output-card": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "905ffaaca344119e",
+      "video": "cut-previews/proof.output-card.mp4",
+      "poster": "cut-previews/proof.output-card.jpg"
+    },
+    "proof.query-results": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "f6efca8a3d616826",
+      "video": "cut-previews/proof.query-results.mp4",
+      "poster": "cut-previews/proof.query-results.jpg"
+    },
+    "proof.stat-result": {
+      "beat": "proof",
+      "seconds": 4,
+      "hash": "a209b8ef79696491",
+      "video": "cut-previews/proof.stat-result.mp4",
+      "poster": "cut-previews/proof.stat-result.jpg"
+    },
+    "proof.ring-result": {
+      "beat": "proof",
+      "seconds": 4,
+      "hash": "fcefafe2541f7000",
+      "video": "cut-previews/proof.ring-result.mp4",
+      "poster": "cut-previews/proof.ring-result.jpg"
+    },
+    "proof.customer-quote": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "cf10860d03f6f50b",
+      "video": "cut-previews/proof.customer-quote.mp4",
+      "poster": "cut-previews/proof.customer-quote.jpg"
+    },
+    "proof.demo-with-name": {
+      "beat": "proof",
+      "seconds": 5.5,
+      "hash": "6736e018bd0b4432",
+      "video": "cut-previews/proof.demo-with-name.mp4",
+      "poster": "cut-previews/proof.demo-with-name.jpg"
+    },
+    "turn.before-after": {
+      "beat": "turn",
+      "seconds": 5,
+      "hash": "ca887963b5cb1678",
+      "video": "cut-previews/turn.before-after.mp4",
+      "poster": "cut-previews/turn.before-after.jpg"
+    },
+    "turn.old-way-new-way": {
+      "beat": "turn",
+      "seconds": 5,
+      "hash": "f2de39380a5daa42",
+      "video": "cut-previews/turn.old-way-new-way.mp4",
+      "poster": "cut-previews/turn.old-way-new-way.jpg"
+    },
+    "turn.used-to-now": {
+      "beat": "turn",
+      "seconds": 4,
+      "hash": "8c2d200cab7dc1b5",
+      "video": "cut-previews/turn.used-to-now.mp4",
+      "poster": "cut-previews/turn.used-to-now.jpg"
+    },
+    "turn.word-roll": {
+      "beat": "turn",
+      "seconds": 4.5,
+      "hash": "1fe1fc3630f19538",
+      "video": "cut-previews/turn.word-roll.mp4",
+      "poster": "cut-previews/turn.word-roll.jpg"
+    },
+    "turn.better-way": {
+      "beat": "turn",
+      "seconds": 3.5,
+      "hash": "8a5a0277aedd35ac",
+      "video": "cut-previews/turn.better-way.mp4",
+      "poster": "cut-previews/turn.better-way.jpg"
+    },
+    "turn.zero-stat": {
+      "beat": "turn",
+      "seconds": 4,
+      "hash": "2f1714ffdf657c6b",
+      "video": "cut-previews/turn.zero-stat.mp4",
+      "poster": "cut-previews/turn.zero-stat.jpg"
+    },
+    "turn.what-if": {
+      "beat": "turn",
+      "seconds": 3.5,
+      "hash": "d5c817b84b82d27a",
+      "video": "cut-previews/turn.what-if.mp4",
+      "poster": "cut-previews/turn.what-if.jpg"
+    },
+    "turn.introducing": {
+      "beat": "turn",
+      "seconds": 4,
+      "hash": "e32aae5d87354cad",
+      "video": "cut-previews/turn.introducing.mp4",
+      "poster": "cut-previews/turn.introducing.jpg"
+    },
+    "turn.what-goes": {
+      "beat": "turn",
+      "seconds": 5,
+      "hash": "070ebb1f1cea7357",
+      "video": "cut-previews/turn.what-goes.mp4",
+      "poster": "cut-previews/turn.what-goes.jpg"
+    },
+    "turn.answer-card": {
+      "beat": "turn",
+      "seconds": 5,
+      "hash": "398788b39bf0c80f",
+      "video": "cut-previews/turn.answer-card.mp4",
+      "poster": "cut-previews/turn.answer-card.jpg"
+    },
+    "turn.reframe-lines": {
+      "beat": "turn",
+      "seconds": 3.5,
+      "hash": "4ee30033f8a7f699",
+      "video": "cut-previews/turn.reframe-lines.mp4",
+      "poster": "cut-previews/turn.reframe-lines.jpg"
+    },
+    "turn.quote-pivot": {
+      "beat": "turn",
+      "seconds": 5,
+      "hash": "d962dd439b1360a9",
+      "video": "cut-previews/turn.quote-pivot.mp4",
+      "poster": "cut-previews/turn.quote-pivot.jpg"
+    },
+    "cta.logo-sting": {
+      "beat": "cta",
+      "seconds": 3,
+      "hash": "12d51cc51d0622b9",
+      "video": "cut-previews/cta.logo-sting.mp4",
+      "poster": "cut-previews/cta.logo-sting.jpg"
+    },
+    "cta.sting-button": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "b19f456b59a9059e",
+      "video": "cut-previews/cta.sting-button.mp4",
+      "poster": "cut-previews/cta.sting-button.jpg"
+    },
+    "cta.typed-url": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "8467ddfba841f270",
+      "video": "cut-previews/cta.typed-url.mp4",
+      "poster": "cut-previews/cta.typed-url.jpg"
+    },
+    "cta.glow-sting": {
+      "beat": "cta",
+      "seconds": 4,
+      "hash": "6347960c5184af83",
+      "video": "cut-previews/cta.glow-sting.mp4",
+      "poster": "cut-previews/cta.glow-sting.jpg"
+    },
+    "cta.kinetic-ask": {
+      "beat": "cta",
+      "seconds": 4,
+      "hash": "72b48133fc5fd531",
+      "video": "cut-previews/cta.kinetic-ask.mp4",
+      "poster": "cut-previews/cta.kinetic-ask.jpg"
+    },
+    "cta.title-offer": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "a79b976da556b2e6",
+      "video": "cut-previews/cta.title-offer.mp4",
+      "poster": "cut-previews/cta.title-offer.jpg"
+    },
+    "cta.free-price": {
+      "beat": "cta",
+      "seconds": 4,
+      "hash": "5c422af69df0bd29",
+      "video": "cut-previews/cta.free-price.mp4",
+      "poster": "cut-previews/cta.free-price.jpg"
+    },
+    "cta.grid-outro": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "bf9db2bd7a5d20d5",
+      "video": "cut-previews/cta.grid-outro.mp4",
+      "poster": "cut-previews/cta.grid-outro.jpg"
+    },
+    "cta.when-roll": {
+      "beat": "cta",
+      "seconds": 4,
+      "hash": "043b033227ee1202",
+      "video": "cut-previews/cta.when-roll.mp4",
+      "poster": "cut-previews/cta.when-roll.jpg"
+    },
+    "cta.lines-sting": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "b8ee7f47adf63d65",
+      "video": "cut-previews/cta.lines-sting.mp4",
+      "poster": "cut-previews/cta.lines-sting.jpg"
+    },
+    "cta.join-count": {
+      "beat": "cta",
+      "seconds": 4,
+      "hash": "412a77cc8652eaee",
+      "video": "cut-previews/cta.join-count.mp4",
+      "poster": "cut-previews/cta.join-count.jpg"
+    },
+    "cta.stamp-close": {
+      "beat": "cta",
+      "seconds": 3.5,
+      "hash": "0ff4ae5972860a93",
+      "video": "cut-previews/cta.stamp-close.mp4",
+      "poster": "cut-previews/cta.stamp-close.jpg"
+    }
+  }
+}

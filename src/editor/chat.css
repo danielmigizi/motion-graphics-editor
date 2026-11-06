@@ -1,0 +1,1942 @@
+/* Editor chat (owned by the chat lane): docked at the right of the shell, full
+   height under the header, closed by default and resizable (layout.ts; the
+   column and its edge are in styles.css). A slim head, the conversation set tight
+   at 13 px, and one composer box at the foot: context chip, field and actions
+   inside a single outline. Cards the user acts on (outline, proposal) are
+   outlined, not lifted: while they wait for a decision they carry the
+   featured border, the one place signal appears in dark. Uses the design
+   tokens in styles.css only. */
+
+.c-panel {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+}
+
+/* ---- Head: the agent picker left, Session and New chat right -------------- */
+
+.c-head {
+  position: relative; /* anchors the session panel */
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  height: var(--head-h); /* level with the stage header */
+  padding: 0 var(--space-2) 0 var(--space-2);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+}
+
+.c-head-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0;
+}
+
+.c-new-chat {
+  color: var(--text-dim);
+}
+
+/* Hide the chat: closes the column; the header's chat toggle (or ⌘J) brings it back. */
+.c-hide {
+  color: var(--text-faint);
+}
+
+/* Session details (SessionDetails.tsx): a quiet button, and a card under the
+   head with what the session reported (available) apart from what it used. */
+
+.c-session-btn {
+  gap: 4px;
+  color: var(--text-dim);
+}
+
+.btn.c-session-btn[aria-expanded='true'] {
+  background: var(--panel-raised);
+  color: var(--text);
+}
+
+.c-session-btn svg {
+  color: var(--text-faint);
+}
+
+.c-session-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 8px;
+  right: 8px;
+  z-index: var(--layer-popover);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(520px, 70vh);
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop);
+  color: var(--text);
+  font-size: var(--text-md);
+  line-height: 1.45;
+  animation: rise-in var(--dur) var(--ease);
+}
+
+.c-session-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.c-session-kicker {
+  margin: 0;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.c-session-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.c-session-grid {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 4px 10px;
+  margin: 0;
+}
+
+.c-session-grid dt {
+  color: var(--text-dim);
+}
+
+.c-session-grid dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.c-session-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-session-names {
+  color: var(--text-dim);
+}
+
+.c-session-count,
+.c-session-none {
+  color: var(--text-faint);
+}
+
+/* Under the permission mode: reported by the agent, or only set by the editor. */
+.c-session-source {
+  display: block;
+  color: var(--text-faint);
+}
+
+.c-session-source[data-source='configured'] {
+  font-style: italic;
+}
+
+.c-session-status-label {
+  color: var(--text-dim);
+}
+
+.c-session-status.connected .c-session-status-label {
+  color: var(--ok);
+}
+
+.c-session-status.needs-auth .c-session-status-label,
+.c-session-status.failed .c-session-status-label {
+  color: var(--warn);
+}
+
+.c-session-tools summary {
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.c-session-tools summary:hover {
+  color: var(--text);
+}
+
+.c-session-tools .c-session-names {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.c-session-note {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+/* Agent & model picker */
+
+.c-picker {
+  position: relative;
+  min-width: 0;
+}
+
+.c-picker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--font-size);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.c-picker-btn:hover:not([aria-disabled]),
+.c-picker-btn[aria-expanded='true'] {
+  background: var(--panel-hover);
+}
+
+.c-picker-btn[aria-disabled] {
+  cursor: default;
+}
+
+.c-picker-btn svg {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.c-picker-name {
+  font-weight: 600;
+}
+
+.c-picker-model {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-faint);
+}
+
+.c-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.c-dot.available {
+  background: var(--ok);
+}
+
+.c-dot.signed-out {
+  background: var(--warn);
+}
+
+.c-dot.missing {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--text-faint);
+}
+
+.c-dot.unsupported {
+  background: var(--danger);
+}
+
+/* The agent is at work: the dot takes the accent and breathes. */
+.c-dot.busy {
+  background: var(--accent);
+  animation: c-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes c-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px var(--accent-weak);
+  }
+  50% {
+    box-shadow: 0 0 0 5px var(--accent-weak);
+  }
+}
+
+.c-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  z-index: var(--layer-popover);
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  max-height: min(560px, 75vh);
+  overflow-y: auto;
+  padding: var(--space-1) var(--space-1) 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop);
+  outline: none;
+  animation: rise-in var(--dur) var(--ease);
+}
+
+.c-menu-empty {
+  padding: var(--space-3);
+  color: var(--text-dim);
+  font-size: var(--text-md);
+}
+
+.c-menu-group {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) 0 var(--space-1);
+}
+
+.c-menu-group + .c-menu-group {
+  border-top: 1px solid var(--rule);
+}
+
+.c-menu-agent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-md);
+}
+
+.c-menu-agent-name {
+  font-weight: 600;
+}
+
+.c-menu-status {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.c-menu-group.signed-out .c-menu-status {
+  color: var(--warn);
+}
+
+.c-menu-detail {
+  padding: 0 var(--space-2) var(--space-1) var(--space-5);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.c-menu-group:not(.available) .c-menu-agent-name {
+  color: var(--text-dim);
+}
+
+.c-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-md);
+  text-align: left;
+  cursor: pointer;
+}
+
+.c-menu-item:hover,
+.c-menu-item:focus-visible {
+  background: var(--panel-hover);
+  outline: none;
+}
+
+.c-menu-item[aria-checked='true'] {
+  color: var(--accent-strong);
+  font-weight: 500;
+}
+
+.c-menu-item-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c-check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 12px;
+  margin-right: 5px;
+}
+
+/* Long model lists (Cursor offers hundreds): search, then a short scrolling list. */
+.c-menu-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 4px 4px 6px;
+  padding: 0 var(--space-2);
+  height: 30px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--field);
+  color: var(--text-faint);
+  cursor: text;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.c-menu-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+
+.c-menu-search svg {
+  flex: none;
+}
+
+.c-menu-search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: var(--text-md);
+  outline: none;
+}
+
+.c-menu-search input::placeholder {
+  color: var(--text-faint);
+}
+
+.c-menu-models {
+  display: flex;
+  flex-direction: column;
+  max-height: 212px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The current model stays in view while the rest scroll under it. */
+.c-menu-models .c-menu-item[data-pinned] {
+  position: sticky;
+  top: 0;
+  z-index: var(--layer-sticky);
+  background: var(--panel);
+  box-shadow: 0 1px 0 var(--rule);
+}
+
+.c-menu-models .c-menu-item[data-pinned]:hover,
+.c-menu-models .c-menu-item[data-pinned]:focus-visible {
+  background: var(--panel-hover);
+}
+
+.c-menu-none {
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.c-menu-foot {
+  position: sticky;
+  bottom: 0;
+  margin: 2px -4px 0;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--rule);
+  background: var(--panel-raised);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+/* ---- The conversation ---------------------------------------------------- */
+
+.c-list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: var(--pad) var(--pad) var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* A small label: sentence case in the faint ink, the one label size in the column. */
+.c-eyebrow,
+.c-request-label {
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* A quiet disclosure: "Show full request", "5 steps". */
+.c-disclose {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.c-disclose:hover {
+  color: var(--text);
+}
+
+.c-disclose svg {
+  color: var(--text-faint);
+}
+
+/* A project with content but no conversation yet. */
+.c-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+
+.c-empty strong {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-display-weight);
+}
+
+.c-empty .fine {
+  margin: 2px 0 0;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+/* New video: on a blank project the empty chat is the brief. It sits low,
+   right above the composer it introduces; the space above stays empty. */
+.c-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.c-brief-title {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-display-weight);
+  letter-spacing: -0.012em;
+  line-height: 1.25;
+}
+
+.c-brief-tip {
+  margin-bottom: 6px;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.c-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.c-example {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  background: var(--panel-raised);
+  color: var(--text);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+  transition:
+  background-color var(--dur-fast) var(--ease),
+  border-color var(--dur-fast) var(--ease);
+}
+
+.c-example:hover {
+  border-color: var(--rule-strong);
+  background: var(--panel-hover);
+}
+
+/* The agent is drafting the outline: a quiet line under the messages. */
+.c-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  line-height: 1.4;
+}
+
+.c-status-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.c-list > .notice {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.4;
+}
+
+/* Messages: the user's in a grey block on the right, the agent's as plain
+   text under its name. */
+
+.c-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 100%;
+  line-height: 1.55;
+}
+
+.c-user {
+  align-self: flex-end;
+  max-width: calc(100% - 36px);
+  margin-left: 36px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg);
+  background: var(--panel-raised);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.c-user.queued,
+.c-user.cancelled {
+  opacity: 0.6;
+}
+
+.c-user-note {
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+/* One of the editor's own prompts, folded to what the user would recognise. */
+.c-request {
+  gap: 4px;
+  min-width: 60%;
+}
+
+.c-request-summary {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.c-request .c-disclose {
+  margin-top: 2px;
+}
+
+.c-request-full {
+  max-height: 260px;
+  margin-top: 4px;
+  padding-top: var(--space-2);
+  overflow-y: auto;
+  border-top: 1px solid var(--rule);
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+
+.c-agent {
+  align-self: stretch;
+  gap: 6px;
+}
+
+.c-by {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.c-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.c-stopped {
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+.c-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+/* Step lists read as a log, not a numbered outline. */
+.c-step-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+/* Agent replies: a small Markdown subset, set for a narrow column. */
+.c-md {
+  white-space: normal;
+}
+
+.c-md p,
+.c-md ul,
+.c-md ol,
+.c-md pre {
+  margin: 0;
+}
+
+.c-md > * + * {
+  margin-top: 8px;
+}
+
+.c-md li > :is(ul, ol) {
+  margin-top: 4px;
+}
+
+.c-md ul,
+.c-md ol {
+  padding-left: var(--space-4);
+}
+
+.c-md li + li {
+  margin-top: 4px;
+}
+
+.c-md li::marker {
+  color: var(--text-faint);
+}
+
+.c-md ol > li::marker {
+  font-variant-numeric: tabular-nums;
+}
+
+.c-md ul ul {
+  list-style-type: circle;
+}
+
+.c-md strong {
+  font-weight: 650;
+  color: var(--text);
+}
+
+.c-md em {
+  font-style: italic;
+}
+
+.c-md-h {
+  font-weight: 650;
+}
+
+.c-md code {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--panel-raised);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  /* A file name wrapping across lines keeps its chip on both halves. */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.c-md pre {
+  max-height: 240px;
+  overflow: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--panel-raised);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.c-md pre code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.c-md hr {
+  height: 1px;
+  margin: 10px 0;
+  border: 0;
+  background: var(--rule);
+}
+
+.c-error {
+  margin-top: 4px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: var(--danger-weak);
+  color: var(--danger);
+  font-size: var(--text-md);
+}
+
+/* ---- Cards in the conversation: the outline and the proposal -------------- */
+
+/* Waiting for a decision: a raised card with the featured border, no tint. */
+.c-outline,
+.c-proposal {
+  gap: 2px;
+  padding: var(--space-3) var(--space-3) var(--space-3);
+  border: 1px solid var(--featured);
+  border-radius: var(--radius-card);
+  background: var(--panel-raised);
+}
+
+/* The outline the agent proposes: edit it in place, then Approve & build. */
+.c-outline {
+  gap: 8px;
+  padding: var(--space-3) var(--space-3) var(--space-3);
+}
+
+.c-outline-eyebrow {
+  color: var(--accent-strong);
+}
+
+.c-outline-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule);
+}
+
+.c-outline-actions .btn.small {
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-3);
+}
+
+/* The chat card: the build choice on its own row above the actions, both options readable. */
+.c-outline-build {
+  display: flex;
+  margin-top: 2px;
+}
+
+.c-outline-build .ins-seg.ol-build {
+  flex: 1;
+}
+
+.ol-review.ol-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ol-compact .ol-head {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding-bottom: 0;
+}
+
+/* Fields in the card read as text until hovered or focused. */
+.ol-compact .input {
+  border-color: transparent;
+  background: transparent;
+}
+
+.ol-compact .input:hover:not(:focus) {
+  border-color: var(--rule);
+}
+
+.ol-compact .input.ol-title {
+  height: 30px;
+  margin-left: -8px;
+  width: calc(100% + 8px);
+  font-size: var(--text-lg);
+  font-weight: var(--font-display-weight);
+}
+
+.ol-compact .ol-meter-text {
+  font-size: var(--text-md);
+}
+
+.ol-compact .ol-list {
+  gap: 0;
+}
+
+/* Compact rows: status dot, name, length, then the purpose under them;
+   rows parted by hairlines, reorder and delete appear on hover. */
+.ol-compact .ol-row {
+  grid-template-columns: 8px minmax(0, 1fr);
+  gap: 8px;
+  padding: var(--space-2) 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.ol-compact .ol-dot {
+  margin-top: 11px;
+}
+
+.ol-compact .ol-main {
+  gap: 0;
+}
+
+/* Name, then the hover tools, then the length flush right (as in the approved card). */
+.ol-compact .ol-line {
+  grid-template-columns: minmax(0, 1fr) auto 58px;
+  gap: 2px;
+}
+
+.ol-compact .ol-tools {
+  order: 1;
+}
+
+.ol-compact .ol-duration {
+  order: 2;
+}
+
+.ol-compact .input.ol-name {
+  margin-left: -8px;
+  width: calc(100% + 8px);
+  font-weight: 600;
+}
+
+.ol-compact .ol-duration .input {
+  padding-right: var(--space-4);
+  color: var(--text-dim);
+  text-align: right;
+}
+
+.ol-compact .ol-duration .unit {
+  right: 5px;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+.ol-compact .input {
+  text-overflow: ellipsis;
+}
+
+.ol-compact .ol-tools {
+  gap: 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.ol-compact .ol-row:hover .ol-tools,
+.ol-compact .ol-row:focus-within .ol-tools {
+  opacity: 1;
+}
+
+.ol-compact .input.ol-purpose {
+  height: 24px;
+  margin-left: -8px;
+  width: calc(100% + 8px);
+  color: var(--text-dim);
+  font-size: var(--text-md);
+}
+
+.ol-compact .ol-add {
+  justify-content: flex-start;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+}
+
+.ol-compact .ol-add:hover:not(:disabled) {
+  border-color: var(--rule);
+  color: var(--accent-strong);
+}
+
+/* A scene's state: built (green), proposed (the accent), not built yet (hollow). */
+.ol-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.ol-dot.built {
+  background: var(--ok);
+}
+
+.ol-dot.proposed {
+  background: var(--accent);
+}
+
+.ol-dot.pending {
+  box-shadow: inset 0 0 0 1.5px var(--text-faint);
+}
+
+/* After approval: a compact, read-only summary that tracks the build; no
+   longer waiting, so a plain rule instead of the featured border. */
+.c-outline.approved {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border-color: var(--rule);
+}
+
+.c-outline-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--rule);
+}
+
+.c-badge {
+  flex: none;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.c-badge.ok {
+  background: var(--ok-weak);
+  color: var(--ok);
+}
+
+.c-outline-title {
+  min-width: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.c-outline-meta {
+  flex: none;
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.c-outline-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.c-outline-row {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 1px 8px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.c-outline-row + .c-outline-row {
+  border-top: 1px solid var(--rule);
+}
+
+.c-outline-row .ol-dot {
+  align-self: center;
+}
+
+.c-outline-name {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c-outline-dur {
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.c-outline-purpose {
+  grid-column: 2 / -1;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+/* The proposal waiting for review: the same featured card. */
+.c-proposal {
+  gap: 3px;
+  padding: var(--space-3) var(--space-3) var(--space-3);
+}
+
+.c-proposal-kicker {
+  color: var(--accent-strong);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.c-proposal-title {
+  color: var(--text);
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.c-proposal-detail {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.c-proposal-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.c-proposal-actions .btn.small {
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-3);
+}
+
+.c-proposal-hint {
+  min-width: 0;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+/* "In review": the review button, quiet, while the review is open. */
+.c-tag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--panel);
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+
+.c-proposal.stale {
+  border-color: color-mix(in srgb, var(--warn) 45%, transparent);
+  background: linear-gradient(var(--warn-weak), var(--warn-weak)), var(--panel-raised);
+}
+
+.c-proposal.stale .c-proposal-kicker {
+  color: var(--warn);
+}
+
+/* ---- The agent status line (AgentStatus.tsx) ------------------------------ */
+
+.agent-status {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--space-1) var(--pad) var(--space-1);
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.agent-status-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* The agent-link chip keeps .up / .down / .busy for the bridge check. */
+.agent-link {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.agent-link .dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.agent-link.up .dot {
+  background: var(--ok);
+}
+
+.agent-link.down {
+  color: var(--warn);
+}
+
+.agent-link.down .dot {
+  background: var(--warn);
+}
+
+.agent-link.waiting .dot {
+  background: var(--accent);
+}
+
+.agent-link.busy .dot {
+  background: var(--accent);
+  animation: c-pulse 1.4s ease-in-out infinite;
+}
+
+.agent-link-detail {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agent-link.busy .agent-link-detail,
+.agent-link.waiting .agent-link-detail {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.agent-status-elapsed {
+  flex: none;
+  color: var(--text-faint);
+}
+
+.agent-status-steps {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.agent-status-steps:hover,
+.agent-status-steps[aria-expanded='true'] {
+  background: var(--panel-hover);
+  color: var(--text);
+}
+
+.agent-status-list {
+  max-height: 168px;
+  margin: 2px 0 2px;
+  padding: 0 0 0 var(--space-4);
+  list-style: none;
+  overflow-y: auto;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+
+.agent-status-list li.now {
+  color: var(--text);
+}
+
+.agent-status-recent {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding-left: var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.agent-status-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-status-recent.not-applied .agent-status-text {
+  color: var(--text-faint);
+}
+
+.agent-status-when {
+  color: var(--text-faint);
+}
+
+/* ---- Composer ------------------------------------------------------------ */
+
+.c-composer {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+
+.c-composer textarea.input {
+  width: 100%;
+  min-height: 44px;
+  max-height: 200px;
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: var(--font-size);
+  line-height: 1.5;
+  resize: none;
+}
+
+.c-composer textarea.input:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+/* One outline holds the context chip, the field and its actions. */
+.c-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  background: var(--field);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.c-box:focus-within {
+  border-color: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-weak);
+}
+
+.c-box > .c-chips,
+.c-box > .c-attach-row {
+  padding: var(--space-2) var(--space-2) 0;
+}
+
+.c-chips,
+.c-brief-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Chips: raised, a hairline, 24 px. Length and Format open a control; Outline
+   first toggles with an accent check. */
+.c-brief-chip,
+.c-composer .c-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--panel-raised);
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+.c-brief-chip {
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.c-brief-chip:hover,
+.c-brief-chip.open {
+  border-color: var(--rule-strong);
+}
+
+.c-brief-chip b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.c-brief-chip > svg {
+  color: var(--text-faint);
+}
+
+.c-brief-chip.toggle.on {
+  color: var(--text);
+}
+
+.c-brief-check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+}
+
+.c-brief-chip.toggle.on .c-brief-check {
+  box-shadow: none;
+  color: var(--accent);
+}
+
+.c-brief-pop-anchor {
+  position: relative;
+}
+
+/* Opens upward: the composer sits at the bottom of the column. */
+.c-brief-pop {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: var(--layer-popover);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 240px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop);
+}
+
+.c-brief-pop-head {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+}
+
+.c-brief-pop-head output {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.c-brief-range {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.c-brief-scale {
+  display: flex;
+  justify-content: space-between;
+  margin: -4px 0 0;
+  color: var(--text-faint);
+  font-size: var(--text-xs);
+}
+
+/* What the user is pointing at: in the composer a chip with an accent pin;
+   in a sent message, a quiet line above the text. */
+.c-context {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 5px;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c-context svg {
+  flex: none;
+  color: var(--accent);
+}
+
+/* Inside the field the chip takes the panel step, so it reads as a chip on white too. */
+.c-composer .c-context {
+  padding: 0 var(--space-1) 0 var(--space-2);
+  border-color: transparent;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.c-composer .c-context .icon-btn.small {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  color: var(--text-faint);
+}
+
+.c-attach-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.c-attach-row .fine {
+  margin: 0;
+  font-size: var(--text-md);
+}
+
+.c-attach {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 200px;
+  height: 30px;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-1);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--panel-raised);
+  font-size: var(--text-sm);
+}
+
+.c-user .c-attach {
+  border-color: transparent;
+}
+
+.c-attach img,
+.c-attach-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: var(--panel-hover);
+  display: grid;
+  place-items: center;
+}
+
+.c-attach-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* What an attachment becomes in a new video. */
+.c-attach-tag {
+  flex: none;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.c-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1) var(--space-2) var(--space-2);
+}
+
+.c-actions .icon-btn {
+  width: var(--btn-h-sm);
+  height: var(--btn-h-sm);
+}
+
+.c-spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+.c-actions .btn {
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.c-actions .btn.c-send {
+  justify-content: center;
+  width: var(--btn-h-sm);
+  padding: 0;
+  border-radius: var(--radius);
+}
+
+.c-send svg {
+  margin: 0;
+}
+
+/* Auto-apply: off, agent edits wait for review; on, they land at once. */
+.c-switch {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: var(--btn-h-sm);
+  padding: 0 var(--space-2);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.c-switch:hover {
+  color: var(--text);
+}
+
+.c-switch-track {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--panel-hover);
+  box-shadow: inset 0 0 0 1px var(--rule-strong);
+  transition:
+  background-color var(--dur-fast) var(--ease),
+  box-shadow var(--dur-fast) var(--ease);
+}
+
+.c-switch-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition:
+  transform var(--dur-fast) var(--ease),
+  background-color var(--dur-fast) var(--ease);
+}
+
+.c-switch.on {
+  color: var(--accent-strong);
+}
+
+.c-switch.on .c-switch-track {
+  background: var(--accent);
+  box-shadow: none;
+}
+
+.c-switch.on .c-switch-knob {
+  background: var(--on-accent);
+  transform: translateX(10px);
+}
+
+.c-switch-row {
+  display: flex;
+  padding: 0 var(--pad) var(--pad);
+}
+
+.c-autoapply {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-dim);
+  font-size: var(--text-md);
+}
+
+.c-autoapply-tag {
+  flex: none;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--accent-weak);
+  color: var(--accent-strong);
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.c-autoapply-text {
+  min-width: 0;
+  line-height: 1.35;
+}
+
+/* A reply in progress still runs with the switch as it was when sent. */
+.c-autoapply-next {
+  display: block;
+  color: var(--text);
+}
+
+/* ---- Notices in the column: another project opened, agent not ready ------- */
+
+.c-held {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 12px var(--pad) 0;
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-weak);
+  color: var(--text);
+  font-size: var(--text-md);
+  line-height: 1.4;
+}
+
+.c-held span {
+  flex: 1 1 180px;
+}
+
+.c-unavailable,
+.permission-prompt {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel-raised);
+  color: var(--text);
+}
+
+.c-unavailable {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px var(--pad) 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-md);
+  line-height: 1.45;
+}
+
+.c-unavailable strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size);
+  font-weight: 600;
+}
+
+.c-unavailable strong::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--warn);
+}
+
+.c-unavailable span {
+  color: var(--text-dim);
+}
+
+.c-unavailable-hint {
+  color: var(--text-faint);
+  font-size: var(--text-md);
+}
+
+.c-drop {
+  position: absolute;
+  inset: 8px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
+  color: var(--accent-strong);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* ---- Connect panel (ConnectAgents.tsx): in the chat when the agent isn't
+   ready (compact), and in the Connect agents sheet ---------------------------- */
+
+.c-connect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space-3) var(--pad);
+  font-size: var(--text-md);
+}
+
+.c-connect-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.c-connect-head strong {
+  font-size: var(--font-size);
+  font-weight: 600;
+}
+
+.c-connect-intro {
+  margin: 0;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.c-connect-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel-raised);
+}
+
+.c-connect-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-3) var(--space-3);
+}
+
+.c-connect-item + .c-connect-item {
+  border-top: 1px solid var(--rule);
+}
+
+.c-connect-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.c-connect-name {
+  font-weight: 600;
+}
+
+.c-connect-item:not(.available) .c-connect-name {
+  color: var(--text-dim);
+}
+
+.c-connect-state {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+}
+
+.c-connect-item.available .c-connect-state {
+  color: var(--ok);
+}
+
+.c-connect-item.signed-out .c-connect-state {
+  color: var(--warn);
+}
+
+.c-connect-item.unsupported .c-connect-state {
+  color: var(--danger);
+}
+
+.c-connect-explain {
+  padding-left: var(--space-4);
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.c-connect-detail {
+  padding-left: var(--space-4);
+  color: var(--text-faint);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.c-connect-cmd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 15px;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--field);
+}
+
+.c-connect-cmd code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  user-select: all;
+}
+
+.c-connect-docs {
+  align-self: flex-start;
+  margin-left: 15px;
+  color: var(--accent-strong);
+  font-size: var(--text-md);
+}
+
+.c-connect.compact {
+  padding-top: var(--space-2);
+}
+
+.c-connect.compact .c-connect-item {
+  padding: var(--space-2) var(--space-3);
+}
+
+/* ---- Permission prompt (PermissionPrompt.tsx): a card above the composer -- */
+
+.permission-prompt {
+  margin: 0 var(--pad) 12px;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-md);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  animation: rise-in var(--dur-slow) var(--ease);
+}
+
+.permission-prompt strong {
+  font-weight: 600;
+}
+
+.permission-prompt-floating {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: calc(var(--layer-toast) + 1);
+  width: min(380px, calc(100vw - 60px));
+  max-height: calc(100vh - 60px);
+  margin: 0;
+  overflow-y: auto;
+  box-shadow: var(--shadow-pop);
+}
+
+/* A long command scrolls inside the card rather than pushing the composer away. */
+.permission-detail {
+  max-height: 180px;
+  margin: 6px 0 0;
+  overflow-y: auto;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+
+.permission-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.permission-actions span {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+}

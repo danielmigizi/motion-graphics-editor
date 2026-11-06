@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "declaration-property-value-allowed-list": {
+      "font-size": "/^(?:var\\(--(?:text-(?:xs|sm|md|lg|xl)|font-size)\\)|inherit)$/",
+      "/^padding/": "/^(?:0|var\\(--(?:space-[1-6]|pad|pad-l)\\)|calc\\(var\\(--space-[1-6]\\) - [12]px\\)|calc\\((?:\\s*(?:var\\(--(?:space-[1-6]|pad|pad-l)\\)|var\\(--[a-z][a-z0-9-]*, ?\\d+\\)|\\d+(?:\\.\\d+)?|[-+*/()])\\s*)+\\))(?:\\s+(?:0|var\\(--(?:space-[1-6]|pad|pad-l)\\)|calc\\(var\\(--space-[1-6]\\) - [12]px\\)|calc\\((?:\\s*(?:var\\(--(?:space-[1-6]|pad|pad-l)\\)|var\\(--[a-z][a-z0-9-]*, ?\\d+\\)|\\d+(?:\\.\\d+)?|[-+*/()])\\s*)+\\))){0,3}$/",
+      "z-index": "/^(?:var\\(--layer-[a-z][a-z0-9-]*\\)|calc\\(var\\(--layer-[a-z][a-z0-9-]*\\) \\+ [1-5]\\)|0|-1|auto)$/",
+      "/^border(-[a-z]+)*-radius$/": "/^(?:0|50%|var\\(--radius(?:-[a-z][a-z0-9-]*)?\\)|inherit)(?:\\s+(?:0|50%|var\\(--radius(?:-[a-z][a-z0-9-]*)?\\)|inherit)){0,3}$/"
+    }
+  }
+}

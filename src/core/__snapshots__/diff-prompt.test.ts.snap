@@ -1,0 +1,206 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildAgentPrompt > is deterministic and matches the snapshot 1`] = `
+"# Motion graphics edit request
+
+You are editing a motion-graphics project in a local editor. You cannot see the editor; everything you need is below.
+Reply with ONE structured patch (protocol \`mge.patch/1\`) in a single \`\`\`json block. Do not edit files.
+
+## Project
+
+- Project id: \`prj_sample\`
+- Name: Relay launch demo
+- Base revision: 1
+- Frame rate: 30 fps (all timing is in integer frames)
+- Size: 1920×1080 px
+
+### Scenes (playback order)
+
+| # | id | name | start frame | duration (frames) | locked |
+|---|----|------|-------------|-------------------|--------|
+| 1 | \`scn_intro\` | Intro | 0 | 210 | no |
+| 2 | \`scn_product\` | Product | 210 | 270 | no |
+| 3 | \`scn_outro\` | Outro | 480 | 240 | no |
+
+### Audio clips
+
+- \`aud_music\` "Music bed" (asset \`ast_music\`): project-level (music bed), plays frames 0–719, trim 0, volume 0.6, fades 15/45
+- \`aud_whoosh\` "Whoosh" (asset \`ast_whoosh\`): anchored to scene \`scn_product\` at scene frame 0, plays frames 210–229, trim 0, volume 0.9, fades 0/0
+
+## Requests
+
+### Request 1
+
+**Instruction:** Make the headline punchier and shorter.
+
+- Scene: \`scn_intro\` "Intro" (starts at frame 0, 210 frames)
+- Frame context: global frame 45 (0:01:15), scene frame 45, element frame 25
+- Target: \`{"sceneId":"scn_intro","elementId":"el_intro_headline"}\`
+- Element: \`el_intro_headline\` "Headline" (type \`text\` — Text)
+- Timing: startFrame 20 (parent-relative if grouped, otherwise scene-relative), durationInFrames 190, visible true
+- Base transform: {"rotation":0,"scale":1,"opacity":1,"x":260,"y":520,"width":1400,"height":140}
+- Animation tracks (element-relative frames): none
+- Group/appearance/property tracks: {}
+
+Current props:
+\`\`\`json
+{
+  "text": "Updates your team actually reads",
+  "fontFamily": "Inter",
+  "fontSize": 104,
+  "fontWeight": 700,
+  "color": "#FFFFFF",
+  "align": "center",
+  "lineHeight": 1.1,
+  "letterSpacing": 0,
+  "reveal": "wordStagger",
+  "revealDurationInFrames": 30,
+  "revealStagger": 2,
+  "revealOrder": "forward",
+  "revealEasing": "easeOut"
+}
+\`\`\`
+
+\`text\` prop schema (required unless marked optional; no other keys are allowed):
+- \`text\` (string, newlines allowed, max 500 chars) — Text
+- \`fontFamily\` (one of "Inter", "Space Grotesk", "IBM Plex Mono", "Fraunces", "Archivo", "Archivo Expanded", "Archivo Narrow", "Geist Mono") — Font
+- \`fontSize\` (integer 8..400) — Size; animatable
+- \`fontWeight\` (one of 400, 500, 600, 700) — Weight
+- \`color\` (colour #RGB/#RRGGBB/#RRGGBBAA or rgb()/rgba()) — Colour; animatable
+- \`align\` (one of "left", "center", "right") — Align
+- \`lineHeight\` (number 0.6..3) — Line height
+- \`letterSpacing\` (number -20..40) — Tracking (px); animatable
+- \`reveal\` (one of "none", "fadeUp", "typewriter", "wordStagger", "charStagger", "lineStagger", "charFadeUp", "scaleIn", "blurIn") — Reveal
+- \`revealStagger\` (integer 0..30) — Stagger frames; optional on existing documents
+- \`revealOrder\` (one of "forward", "reverse", "center", "edges") — Reveal order; optional on existing documents
+- \`revealEasing\` (one of "linear", "easeIn", "easeOut", "easeInOut", "backOut", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeOutExpo", "easeInOutExpo", "hold") — Reveal easing; optional on existing documents
+- \`revealDurationInFrames\` (integer 0..300) — Reveal frames
+
+### Request 2 (whole scene)
+
+**Instruction:** Slow down the chat answer by half a second.
+
+- Scene: \`scn_product\` "Product" (starts at frame 210, 270 frames)
+- Frame context: global frame 400 (0:13:10), scene frame 190
+- Target: \`{"sceneId":"scn_product"}\`
+
+Elements in this scene (paint order, back to front):
+- \`el_product_headline\` "Headline" (\`text\`), startFrame 0, durationInFrames 270
+- \`el_product_image\` "Screenshot" (\`image\`), startFrame 10, durationInFrames 260
+- \`el_product_card\` "Weekly brief card" (\`uiCard\`), startFrame 40, durationInFrames 230
+- \`el_product_chat_user\` "Chat — question" (\`chatBubble\`), startFrame 120, durationInFrames 150
+- \`el_product_chat_ai\` "Chat — answer" (\`chatBubble\`), startFrame 160, durationInFrames 110
+
+## Coordinate model
+
+- \`transform\` is the BASE layout: x/y = top-left in px, rotation in degrees, scale (1 = 100%), opacity 0..1.
+- Animation tracks are layered on top: \`x\`, \`y\`, \`rotation\` keyframes are ADDITIVE offsets; \`scale\`, \`opacity\` keyframes are MULTIPLIERS of the base.
+- Keyframe frames are relative to the element start (0 = first frame on screen). Element \`startFrame\` is relative to its parent group, or scene when parentless.
+- A top-level element must fit in its scene. Children need nonnegative starts but may exceed their group lifetime; ancestors clip their activity.
+
+- Groups: \`parentId\` references a group in the same scene/composition; x/y are relative to its top-left, rotation/scale use its centre, opacity multiplies. Child startFrame is parent-relative; descendants are active only within every ancestor lifetime. Example: \`{"type":"setParent","sceneId":"scn_open","elementId":"el_title","parentId":"el_group","keepWorld":true}\`.
+- Paths: nodes and absolute in/out handles use the element box pixels. Example nodes: \`[{"x":0,"y":80,"out":{"x":60,"y":0}},{"x":180,"y":80,"in":{"x":120,"y":160}}]\`. \`closed\`, lineCap/lineJoin and trimStart/trimEnd/trimOffset control the path.
+- Paint: shape fill/stroke and path fill/stroke accept colour strings or gradients. Example: \`{"type":"linear","angle":90,"stops":[{"offset":0,"color":"#3B82F6"},{"offset":1,"color":"#F8FAFC"}]}\`; radial paint omits angle. Stops are sorted in 0..1; none is allowed only where specified.
+- Property tracks use absolute values for registry-marked animatable props and effects.blur/brightness/contrast/saturate. Example: \`{"type":"setPropertyKeyframe","sceneId":"scn_open","elementId":"el_title","key":"props.color","frame":20,"value":"#3B82F6","easing":"linear"}\`. Numbers interpolate, colours interpolate in linear sRGB, other values hold. Paint colour tracks require a plain colour base, never a gradient/none.
+- Easing curves shape the outgoing segment. Named presets: linear, easeIn, easeOut, easeInOut, backOut, easeInCubic, easeOutCubic, easeInOutCubic, easeOutExpo, easeInOutExpo, hold. Custom example: \`{"type":"cubicBezier","x1":0.2,"y1":-0.3,"x2":0.8,"y2":1.2}\`; x is 0..1, y is -2..3. hold switches exactly at the next keyframe. Custom easing works on stored transform keys and property-key commands; setKeyframe accepts named presets only.
+- Masks: \`{"sourceId":"el_mask","mode":"alpha"}\` or inverted. Source is another unmasked shape/path with the same parent, and is not painted itself. Blend example: \`"blendMode":"screen"\` (normal, multiply, screen, overlay, darken, lighten, color-dodge, color-burn, soft-light, hard-light, difference, exclusion).
+- Effects example: \`{"blur":12,"brightness":1.2,"dropShadow":{"x":0,"y":8,"blur":20,"color":"#00000080"}}\`. Blur/shadow blur 0..200; brightness/contrast/saturate 0..3. updateElement merges effects; null removes a key or clears the entire effects/mask/blendMode field.
+- Text reveals: none, fadeUp, typewriter, wordStagger, charStagger, lineStagger, charFadeUp, scaleIn, blurIn. Example props: \`{"reveal":"charFadeUp","revealStagger":2,"revealOrder":"center","revealEasing":"easeOutCubic"}\`. Order is forward/reverse/center/edges; new reveal props are optional on older documents. Fraunces is an available font.
+- Instances refer to reusable project.compositions trees; no direct or transitive instance cycles. Example props: \`{"compositionId":"cmp_logo","timeOffset":0,"loop":false}\`. Composition definitions are read-only in AI patches; reference an existing definition with an instance. Compositions/markers/changeFormat commands are excluded from patches.
+Available compositions (read-only in patches): {}
+
+## Reply protocol
+
+Reply with exactly one \`\`\`json block containing an object of this shape:
+
+\`\`\`ts
+{
+  "protocol": "mge.patch/1",
+  "projectId": "prj_sample",
+  "baseRevision": 1,
+  "summary": string,            // one line, shown in the editor history
+  "targets": ({ "sceneId": string, "elementId"?: string } | { "audio": "project" } | { "style": "project" })[],
+  "commands": Command[]
+}
+\`\`\`
+
+Targets for this request: \`[{"sceneId":"scn_intro","elementId":"el_intro_headline"},{"sceneId":"scn_product"}]\`
+
+Allowed commands:
+
+- \`{ "type": "updateElement", "sceneId", "elementId", "changes": { "name"?, "visible"?, "startFrame"?, "durationInFrames"?, "transform"?: Partial<Transform>, "props"?: Partial<Props>, "blendMode"?: BlendMode|null, "effects"?: Partial<EffectsWithNull>|null, "mask"?: ElementMask|null } }\`
+- \`{ "type": "setKeyframe", "sceneId", "elementId", "property": "x"|"y"|"rotation"|"scale"|"opacity", "frame", "value", "easing"?: named preset (including cubic/expo and hold) }\` (inserts or replaces the keyframe at that frame)
+- \`{ "type": "setPropertyKeyframe", "sceneId", "elementId", "key", "frame", "value", "easing"? }\` and \`{ "type": "removePropertyKeyframe", "sceneId", "elementId", "key", "frame" }\` need an element or scene target.
+- \`{ "type": "setParent", "sceneId", "elementId", "parentId": string|null, "keepWorld"?: boolean }\` needs an element or scene target. keepWorld defaults true and preserves placement at local frame 0, with integer-rounded x/y; animated parents may change later motion.
+- \`{ "type": "groupElements", "sceneId", "elementIds": string[], "group": {"id","name"} }\` and \`{ "type": "ungroup", "sceneId", "groupId" }\` need a scene target. Grouped children share one parent. Removing a group deletes descendants; deleting a mask source clears its users in the same command.
+- \`{ "type": "removeKeyframe", "sceneId", "elementId", "property", "frame" }\`
+- \`{ "type": "addElement", "sceneId", "element": Element, "index"? }\` (full element: id, type, name, startFrame, durationInFrames, visible, transform, props with every key, tracks)
+- \`{ "type": "removeElement", "sceneId", "elementId" }\`
+- \`{ "type": "moveElement", "sceneId", "elementId", "toIndex" }\` (paint order)
+- \`{ "type": "updateScene", "sceneId", "changes": { "name"?, "durationInFrames"?, "backgroundColor"?, "transitionIn"?: { "type"?, "durationInFrames"? } } }\`
+- \`{ "type": "addAsset", "asset": { "id", "kind": "image"|"svg"|"audio", "name", "src", "mimeType", "width"?, "height"?, "durationInFrames"? } }\` (register an uploaded file; needs no target)
+- \`{ "type": "addAudioClip", "clip": AudioClip }\`, \`{ "type": "updateAudioClip", "clipId", "changes": Partial<AudioClip> }\` (merged; send only what changes) and \`{ "type": "removeAudioClip", "clipId" }\`. A project-level clip (the music bed: no \`sceneId\`, absolute \`startFrame\`) needs the target \`{ "audio": "project" }\`; a clip anchored to a scene (sound effects: \`sceneId\`, scene-relative \`startFrame\`) needs that scene's target \`{ "sceneId" }\`; moving a clip between them needs both. Clips anchored to a locked scene are locked.
+- AudioClip: \`{ id, assetId, name, sceneId?, startFrame, trimStartFrames, durationInFrames, volume 0..1, fadeInFrames, fadeOutFrames, volumeEnvelope?: [{ frame, value 0..1 }] }\`. Envelope frames are clip-relative, sorted, unique, within 0..durationInFrames; the envelope multiplies volume and fades (linear between points, ends held); \`[]\` removes it.
+- \`{ "type": "setStyle", "style": StylePack | null }\` needs the target \`{ "style": "project" }\`. Prefer \`editor_scan_brand\` (it returns a ready proposal) over inventing a pack.
+
+Only these command types are accepted (updateElement, setKeyframe, removeKeyframe, addElement, removeElement, moveElement, updateScene, addAsset, setPropertyKeyframe, removePropertyKeyframe, setParent, groupElements, ungroup, addAudioClip, updateAudioClip, removeAudioClip, detachVideoAudio, setStyle).
+
+Rules:
+
+1. Stay inside the targets. An element target allows commands on that element only; a scene target allows the scene, its elements and its anchored audio clips; \`{ "audio": "project" }\` allows the project-level audio; \`{ "style": "project" }\` allows \`setStyle\`. \`addElement\`, \`removeElement\`, \`updateScene\`, \`groupElements\` and \`ungroup\` need a scene target. Add an audio target only when the request is about the music or sound; add a style target only when applying a brand kit.
+2. Never touch locked scenes, and never lock or unlock scenes.
+3. Keep unrelated props unchanged: send only the props and transform fields you change (they are merged).
+4. Preserve timing (startFrame, durationInFrames, keyframes) unless the instruction asks to change it.
+5. Use only the prop keys and value ranges listed in the schema; colours are #RGB/#RRGGBB/#RRGGBBAA or rgb()/rgba() strings.
+6. Keep \`projectId\` and \`baseRevision\` exactly as given; the editor rejects stale patches.
+
+## Example
+
+\`\`\`json
+{
+  "protocol": "mge.patch/1",
+  "projectId": "prj_sample",
+  "baseRevision": 1,
+  "summary": "Short description of what changed",
+  "targets": [
+    {
+      "sceneId": "scn_intro",
+      "elementId": "el_intro_headline"
+    }
+  ],
+  "commands": [
+    {
+      "type": "updateElement",
+      "sceneId": "scn_intro",
+      "elementId": "el_intro_headline",
+      "changes": {
+        "props": {
+          "text": "New wording here"
+        }
+      }
+    },
+    {
+      "type": "setKeyframe",
+      "sceneId": "scn_intro",
+      "elementId": "el_intro_headline",
+      "property": "opacity",
+      "frame": 0,
+      "value": 0,
+      "easing": "easeOut"
+    },
+    {
+      "type": "setKeyframe",
+      "sceneId": "scn_intro",
+      "elementId": "el_intro_headline",
+      "property": "opacity",
+      "frame": 15,
+      "value": 1,
+      "easing": "linear"
+    }
+  ]
+}
+\`\`\`
+
+Now reply with your patch as one \`\`\`json block.
+"
+`;
